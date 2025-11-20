@@ -104,13 +104,6 @@ Galería interactiva con videos de Google Drive:
 - Solución empresarial completa
 - Gestión de rutas optimizada
 
-## 🌐 Despliegue
-
-### En Lovable
-1. Abre [Lovable Dashboard](https://lovable.dev)
-2. Ve a tu proyecto
-3. Haz clic en **Share → Publish**
-
 ### En otros hosts
 ```bash
 npm run build
