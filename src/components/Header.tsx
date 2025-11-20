@@ -15,87 +15,77 @@ const Header = () => {
   };
 
   const menuItems = [
-    { label: "Inicio", id: "inicio" },
-    { label: "Servicios", id: "servicios" },
-    { label: "Beneficios", id: "beneficios" },
-    { label: "Testimonios", id: "testimonios" },
-    { label: "Contacto", id: "contacto" },
+    { label: "Inicio", id: "hero" },
+    { label: "Soluciones", id: "solutions" },
+    { label: "Videos", id: "videos" },
+    { label: "Beneficios", id: "benefits" },
+    { label: "Casos", id: "cases" },
+    { label: "Contacto", id: "contact" },
   ];
 
   return (
     <motion.header 
-      className="fixed top-0 w-full bg-background/80 backdrop-blur-xl border-b border-border z-50"
+      className="fixed top-0 w-full bg-slate-900/95 backdrop-blur border-b border-white/10 z-50"
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.6 }}
     >
-      <nav className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <motion.div 
-            className="flex items-center gap-3"
+          <motion.a
+            href="/"
+            className="flex items-center gap-2 group"
             whileHover={{ scale: 1.05 }}
           >
-            <div className="relative">
-              <div className="w-12 h-12 bg-gradient-to-br from-primary to-tech-cyan rounded-xl flex items-center justify-center relative overflow-hidden group">
-                <motion.span 
-                  className="text-white font-bold text-2xl z-10"
-                  animate={{ rotate: [0, 360] }}
-                  transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                >
-                  T
-                </motion.span>
-                <motion.div 
-                  className="absolute inset-0 bg-gradient-to-br from-tech-purple to-tech-pink opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                  animate={{ rotate: [0, -360] }}
-                  transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-                />
-              </div>
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">
+              T
             </div>
-            <div>
-              <span className="text-2xl font-bold gradient-text">TechAssist</span>
-              <p className="text-xs text-muted-foreground">Trujillo, Perú</p>
+            <div className="hidden sm:block">
+              <div className="font-bold text-white text-lg">TechAssist</div>
+              <div className="text-xs text-blue-400 font-semibold">Automation</div>
             </div>
-          </motion.div>
+          </motion.a>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-8">
+          {/* Desktop Nav */}
+          <nav className="hidden md:flex items-center gap-8">
             {menuItems.map((item, index) => (
               <motion.button
                 key={item.id}
                 onClick={() => scrollToSection(item.id)}
-                className="text-foreground hover:text-primary transition-colors relative group font-medium"
+                className="text-slate-300 hover:text-blue-400 transition-colors font-medium text-sm relative group"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
               >
                 {item.label}
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"></span>
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-400 group-hover:w-full transition-all duration-300"></span>
               </motion.button>
             ))}
-          </div>
+          </nav>
 
+          {/* CTA Button */}
           <div className="hidden md:block">
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
               <Button 
-                onClick={() => scrollToSection("contacto")}
-                className="bg-gradient-to-r from-primary to-tech-purple hover:shadow-glow transition-all duration-300"
+                onClick={() => scrollToSection("contact")}
+                className="px-6 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg font-semibold text-sm hover:shadow-lg transition-shadow"
               >
-                Solicitar Servicio
+                Consulta Gratis
               </Button>
             </motion.div>
           </div>
 
           {/* Mobile Menu Button */}
-          <motion.button 
-            className="md:hidden"
+          <motion.button
+            whileTap={{ scale: 0.95 }}
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            whileTap={{ scale: 0.9 }}
+            className="md:hidden p-2 rounded-lg hover:bg-white/10 transition-colors"
           >
-            {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            {isMenuOpen ? <X className="h-6 w-6 text-white" /> : <Menu className="h-6 w-6 text-white" />}
           </motion.button>
         </div>
 
@@ -113,7 +103,7 @@ const Header = () => {
                 <motion.button
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
-                  className="text-foreground hover:text-primary transition-colors text-left py-2 px-4 rounded-lg hover:bg-primary/10"
+                  className="block px-4 py-2 text-slate-300 hover:text-blue-400 hover:bg-white/5 rounded-lg transition-all"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
@@ -122,15 +112,15 @@ const Header = () => {
                 </motion.button>
               ))}
               <Button 
-                onClick={() => scrollToSection("contacto")} 
-                className="w-full bg-gradient-to-r from-primary to-tech-purple"
+                onClick={() => scrollToSection("contact")} 
+                className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors"
               >
-                Solicitar Servicio
+                Consulta Gratis
               </Button>
             </motion.div>
           )}
         </AnimatePresence>
-      </nav>
+      </div>
     </motion.header>
   );
 };

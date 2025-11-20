@@ -104,8 +104,8 @@ const Footer = () => {
               </div>
               <div className="flex items-center gap-3">
                 <Phone className="h-5 w-5 flex-shrink-0 text-primary" />
-                <a href="tel:+51999999999" className="text-background/80 hover:text-primary transition-colors">
-                  +51 999 999 999
+                <a href="tel:+51 994466800" className="text-background/80 hover:text-primary transition-colors">
+                  +51 994466800
                 </a>
               </div>
               <div className="flex items-center gap-3">
@@ -116,7 +116,7 @@ const Footer = () => {
               </div>
               <div className="flex gap-3 mt-6">
                 <a 
-                  href="https://wa.me/51999999999" 
+                  href="https://wa.me/51994466800" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 text-background/80 hover:text-green-400 transition-colors"

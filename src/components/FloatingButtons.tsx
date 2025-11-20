@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 const FloatingButtons = () => {
   const handleWhatsApp = () => {
-    window.open("https://wa.me/51999999999", "_blank");
+    window.open("https://wa.me/51994466800", "_blank");
   };
 
   const handleTelegram = () => {
