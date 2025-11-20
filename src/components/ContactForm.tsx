@@ -7,9 +7,22 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { z } from "zod";
+
+const contactSchema = z.object({
+  name: z.string().trim().min(1, { message: "El nombre es requerido" }).max(100),
+  company: z.string().trim().max(100),
+  service: z.string().min(1, { message: "Debe seleccionar un servicio" }),
+  description: z.string().trim().min(10, { message: "La descripción debe tener al menos 10 caracteres" }).max(1000),
+  whatsapp: z.string().trim().min(9, { message: "El número de WhatsApp es inválido" }).max(20),
+  email: z.string().trim().email({ message: "El correo electrónico es inválido" }).max(255),
+  contact_preference: z.enum(["whatsapp", "telegram", "email"])
+});
 
 const ContactForm = () => {
   const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     company: "",
@@ -19,26 +32,81 @@ const ContactForm = () => {
     email: "",
     contact_preference: "whatsapp"
   });
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Por ahora solo mostramos el toast, más adelante conectaremos con la base de datos
-    toast({
-      title: "¡Solicitud enviada!",
-      description: "Nos pondremos en contacto contigo en breve.",
-    });
+    setIsSubmitting(true);
+    setErrors({});
 
-    // Resetear formulario
-    setFormData({
-      name: "",
-      company: "",
-      service: "",
-      description: "",
-      whatsapp: "",
-      email: "",
-      contact_preference: "whatsapp"
-    });
+    try {
+      // Validar datos del formulario
+      const validatedData = contactSchema.parse(formData);
+
+      // Guardar en la base de datos
+      const { data, error } = await supabase
+        .from('service_requests')
+        .insert([{
+          name: validatedData.name,
+          company: validatedData.company || null,
+          service: validatedData.service,
+          description: validatedData.description,
+          whatsapp: validatedData.whatsapp,
+          email: validatedData.email,
+          contact_preference: validatedData.contact_preference
+        }])
+        .select();
+
+      if (error) {
+        console.error('Error al guardar solicitud:', error);
+        toast({
+          title: "Error",
+          description: "Hubo un problema al enviar tu solicitud. Por favor intenta de nuevo.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: "¡Solicitud enviada!",
+        description: "Nos pondremos en contacto contigo en breve.",
+      });
+
+      // Resetear formulario
+      setFormData({
+        name: "",
+        company: "",
+        service: "",
+        description: "",
+        whatsapp: "",
+        email: "",
+        contact_preference: "whatsapp"
+      });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const newErrors: Record<string, string> = {};
+        error.errors.forEach((err) => {
+          if (err.path[0]) {
+            newErrors[err.path[0].toString()] = err.message;
+          }
+        });
+        setErrors(newErrors);
+        toast({
+          title: "Error de validación",
+          description: "Por favor revisa los campos del formulario.",
+          variant: "destructive",
+        });
+      } else {
+        console.error('Error inesperado:', error);
+        toast({
+          title: "Error",
+          description: "Hubo un problema al enviar tu solicitud.",
+          variant: "destructive",
+        });
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -63,7 +131,9 @@ const ContactForm = () => {
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 placeholder="Tu nombre"
+                className={errors.name ? "border-destructive" : ""}
               />
+              {errors.name && <p className="text-sm text-destructive mt-1">{errors.name}</p>}
             </div>
 
             <div>
@@ -78,8 +148,11 @@ const ContactForm = () => {
 
             <div>
               <Label htmlFor="service">Tipo de servicio *</Label>
-              <Select value={formData.service} onValueChange={(value) => setFormData({ ...formData, service: value })}>
-                <SelectTrigger>
+              <Select 
+                value={formData.service} 
+                onValueChange={(value) => setFormData({ ...formData, service: value })}
+              >
+                <SelectTrigger className={errors.service ? "border-destructive" : ""}>
                   <SelectValue placeholder="Selecciona un servicio" />
                 </SelectTrigger>
                 <SelectContent>
@@ -92,6 +165,7 @@ const ContactForm = () => {
                   <SelectItem value="otro">Otro</SelectItem>
                 </SelectContent>
               </Select>
+              {errors.service && <p className="text-sm text-destructive mt-1">{errors.service}</p>}
             </div>
 
             <div>
@@ -103,7 +177,9 @@ const ContactForm = () => {
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 placeholder="Cuéntanos qué necesitas"
                 rows={4}
+                className={errors.description ? "border-destructive" : ""}
               />
+              {errors.description && <p className="text-sm text-destructive mt-1">{errors.description}</p>}
             </div>
 
             <div>
@@ -114,7 +190,9 @@ const ContactForm = () => {
                 value={formData.whatsapp}
                 onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
                 placeholder="+51 999 999 999"
+                className={errors.whatsapp ? "border-destructive" : ""}
               />
+              {errors.whatsapp && <p className="text-sm text-destructive mt-1">{errors.whatsapp}</p>}
             </div>
 
             <div>
@@ -126,7 +204,9 @@ const ContactForm = () => {
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 placeholder="tu@email.com"
+                className={errors.email ? "border-destructive" : ""}
               />
+              {errors.email && <p className="text-sm text-destructive mt-1">{errors.email}</p>}
             </div>
 
             <div>
@@ -150,8 +230,8 @@ const ContactForm = () => {
               </RadioGroup>
             </div>
 
-            <Button type="submit" className="w-full" size="lg">
-              Enviar Solicitud
+            <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
+              {isSubmitting ? "Enviando..." : "Enviar Solicitud"}
             </Button>
           </form>
         </Card>
