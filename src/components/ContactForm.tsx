@@ -9,6 +9,8 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
+import { motion } from "framer-motion";
+import { Send, Mail, Phone, MessageCircle } from "lucide-react";
 
 const contactSchema = z.object({
   name: z.string().trim().min(1, { message: "El nombre es requerido" }).max(100),
@@ -40,10 +42,8 @@ const ContactForm = () => {
     setErrors({});
 
     try {
-      // Validar datos del formulario
       const validatedData = contactSchema.parse(formData);
 
-      // Guardar en la base de datos
       const { data, error } = await supabase
         .from('service_requests')
         .insert([{
@@ -72,7 +72,6 @@ const ContactForm = () => {
         description: "Nos pondremos en contacto contigo en breve.",
       });
 
-      // Resetear formulario
       setFormData({
         name: "",
         company: "",
@@ -96,13 +95,6 @@ const ContactForm = () => {
           description: "Por favor revisa los campos del formulario.",
           variant: "destructive",
         });
-      } else {
-        console.error('Error inesperado:', error);
-        toast({
-          title: "Error",
-          description: "Hubo un problema al enviar tu solicitud.",
-          variant: "destructive",
-        });
       }
     } finally {
       setIsSubmitting(false);
@@ -110,131 +102,216 @@ const ContactForm = () => {
   };
 
   return (
-    <section id="contacto" className="py-20 bg-background">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-            Solicita tu Servicio
+    <section id="contacto" className="py-24 bg-background relative overflow-hidden">
+      {/* Background Effects */}
+      <motion.div 
+        className="absolute top-0 left-1/4 w-96 h-96 bg-tech-blue/10 rounded-full blur-3xl"
+        animate={{ 
+          x: [0, 50, 0],
+          y: [0, 30, 0],
+        }}
+        transition={{ duration: 10, repeat: Infinity }}
+      />
+      <motion.div 
+        className="absolute bottom-0 right-1/4 w-96 h-96 bg-tech-purple/10 rounded-full blur-3xl"
+        animate={{ 
+          x: [0, -50, 0],
+          y: [0, -30, 0],
+        }}
+        transition={{ duration: 12, repeat: Infinity }}
+      />
+
+      <div className="container mx-auto px-4 relative z-10">
+        <motion.div 
+          className="text-center mb-20"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
+          <span className="inline-block text-primary font-semibold mb-4 text-lg">
+            📞 Hablemos de Tu Proyecto
+          </span>
+          <h2 className="text-4xl md:text-6xl font-bold mb-6">
+            <span className="gradient-text">Solicita</span> tu Servicio
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Completa el formulario y nos pondremos en contacto contigo inmediatamente
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            Completa el formulario y te contactaremos en menos de 2 horas
           </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+          {/* Contact Info Cards */}
+          <motion.div
+            className="lg:col-span-1 space-y-6"
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+          >
+            {[
+              { icon: MessageCircle, title: "WhatsApp", value: "+51 999 999 999", href: "https://wa.me/51999999999", color: "from-green-500 to-green-600" },
+              { icon: Phone, title: "Teléfono", value: "+51 999 999 999", href: "tel:+51999999999", color: "from-blue-500 to-blue-600" },
+              { icon: Mail, title: "Email", value: "contacto@techassist.pe", href: "mailto:contacto@techassist.pe", color: "from-purple-500 to-pink-500" },
+            ].map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+              >
+                <Card className="p-6 hover:shadow-xl transition-all duration-300 group">
+                  <a href={item.href} className="flex items-center gap-4">
+                    <div className={`w-14 h-14 bg-gradient-to-br ${item.color} rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform`}>
+                      <item.icon className="h-7 w-7 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">{item.title}</p>
+                      <p className="font-semibold text-foreground">{item.value}</p>
+                    </div>
+                  </a>
+                </Card>
+              </motion.div>
+            ))}
+
+            <Card className="p-6 bg-gradient-to-br from-primary/10 to-tech-purple/10 border-primary/20">
+              <h3 className="font-bold text-lg mb-2">⚡ Respuesta Rápida</h3>
+              <p className="text-sm text-muted-foreground">
+                Te respondemos en menos de 2 horas. Soporte disponible 24/7.
+              </p>
+            </Card>
+          </motion.div>
+
+          {/* Form */}
+          <motion.div
+            className="lg:col-span-2"
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+          >
+            <Card className="p-8 shadow-2xl">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <Label htmlFor="name">Nombre completo *</Label>
+                    <Input
+                      id="name"
+                      required
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      placeholder="Tu nombre"
+                      className={errors.name ? "border-destructive" : ""}
+                    />
+                    {errors.name && <p className="text-sm text-destructive mt-1">{errors.name}</p>}
+                  </div>
+
+                  <div>
+                    <Label htmlFor="company">Empresa (opcional)</Label>
+                    <Input
+                      id="company"
+                      value={formData.company}
+                      onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                      placeholder="Nombre de tu empresa"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="service">Tipo de servicio *</Label>
+                  <Select value={formData.service} onValueChange={(value) => setFormData({ ...formData, service: value })}>
+                    <SelectTrigger className={errors.service ? "border-destructive" : ""}>
+                      <SelectValue placeholder="Selecciona un servicio" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="soporte">Soporte Técnico y Mantenimiento</SelectItem>
+                      <SelectItem value="instalaciones">Instalaciones y Configuraciones</SelectItem>
+                      <SelectItem value="desarrollo">Desarrollo de Software</SelectItem>
+                      <SelectItem value="ciberseguridad">Ciberseguridad</SelectItem>
+                      <SelectItem value="mejoras">Mejoras de Procesos</SelectItem>
+                      <SelectItem value="camaras">Cámaras de Seguridad</SelectItem>
+                      <SelectItem value="otro">Otro</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {errors.service && <p className="text-sm text-destructive mt-1">{errors.service}</p>}
+                </div>
+
+                <div>
+                  <Label htmlFor="description">Descripción del servicio *</Label>
+                  <Textarea
+                    id="description"
+                    required
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    placeholder="Cuéntanos qué necesitas..."
+                    rows={4}
+                    className={errors.description ? "border-destructive" : ""}
+                  />
+                  {errors.description && <p className="text-sm text-destructive mt-1">{errors.description}</p>}
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <Label htmlFor="whatsapp">WhatsApp *</Label>
+                    <Input
+                      id="whatsapp"
+                      required
+                      value={formData.whatsapp}
+                      onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
+                      placeholder="+51 999 999 999"
+                      className={errors.whatsapp ? "border-destructive" : ""}
+                    />
+                    {errors.whatsapp && <p className="text-sm text-destructive mt-1">{errors.whatsapp}</p>}
+                  </div>
+
+                  <div>
+                    <Label htmlFor="email">Email *</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      required
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      placeholder="tu@email.com"
+                      className={errors.email ? "border-destructive" : ""}
+                    />
+                    {errors.email && <p className="text-sm text-destructive mt-1">{errors.email}</p>}
+                  </div>
+                </div>
+
+                <div>
+                  <Label>Preferencia de contacto *</Label>
+                  <RadioGroup
+                    value={formData.contact_preference}
+                    onValueChange={(value) => setFormData({ ...formData, contact_preference: value })}
+                    className="flex gap-6 mt-2"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="whatsapp" id="whatsapp-pref" />
+                      <Label htmlFor="whatsapp-pref" className="cursor-pointer">WhatsApp</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="telegram" id="telegram-pref" />
+                      <Label htmlFor="telegram-pref" className="cursor-pointer">Telegram</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="email" id="email-pref" />
+                      <Label htmlFor="email-pref" className="cursor-pointer">Correo</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+
+                <Button 
+                  type="submit" 
+                  className="w-full bg-gradient-to-r from-primary to-tech-purple hover:shadow-glow transition-all duration-300" 
+                  size="lg"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Enviando..." : "Enviar Solicitud"}
+                  <Send className="ml-2 h-5 w-5" />
+                </Button>
+              </form>
+            </Card>
+          </motion.div>
         </div>
-
-        <Card className="max-w-2xl mx-auto p-8">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <Label htmlFor="name">Nombre completo *</Label>
-              <Input
-                id="name"
-                required
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                placeholder="Tu nombre"
-                className={errors.name ? "border-destructive" : ""}
-              />
-              {errors.name && <p className="text-sm text-destructive mt-1">{errors.name}</p>}
-            </div>
-
-            <div>
-              <Label htmlFor="company">Empresa (opcional)</Label>
-              <Input
-                id="company"
-                value={formData.company}
-                onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                placeholder="Nombre de tu empresa"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="service">Tipo de servicio *</Label>
-              <Select 
-                value={formData.service} 
-                onValueChange={(value) => setFormData({ ...formData, service: value })}
-              >
-                <SelectTrigger className={errors.service ? "border-destructive" : ""}>
-                  <SelectValue placeholder="Selecciona un servicio" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="soporte">Soporte Técnico y Mantenimiento</SelectItem>
-                  <SelectItem value="instalaciones">Instalaciones y Configuraciones</SelectItem>
-                  <SelectItem value="desarrollo">Desarrollo de Software</SelectItem>
-                  <SelectItem value="ciberseguridad">Ciberseguridad</SelectItem>
-                  <SelectItem value="mejoras">Mejoras de Procesos</SelectItem>
-                  <SelectItem value="camaras">Cámaras de Seguridad</SelectItem>
-                  <SelectItem value="otro">Otro</SelectItem>
-                </SelectContent>
-              </Select>
-              {errors.service && <p className="text-sm text-destructive mt-1">{errors.service}</p>}
-            </div>
-
-            <div>
-              <Label htmlFor="description">Descripción del problema/servicio *</Label>
-              <Textarea
-                id="description"
-                required
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                placeholder="Cuéntanos qué necesitas"
-                rows={4}
-                className={errors.description ? "border-destructive" : ""}
-              />
-              {errors.description && <p className="text-sm text-destructive mt-1">{errors.description}</p>}
-            </div>
-
-            <div>
-              <Label htmlFor="whatsapp">Número WhatsApp *</Label>
-              <Input
-                id="whatsapp"
-                required
-                value={formData.whatsapp}
-                onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
-                placeholder="+51 999 999 999"
-                className={errors.whatsapp ? "border-destructive" : ""}
-              />
-              {errors.whatsapp && <p className="text-sm text-destructive mt-1">{errors.whatsapp}</p>}
-            </div>
-
-            <div>
-              <Label htmlFor="email">Correo electrónico *</Label>
-              <Input
-                id="email"
-                type="email"
-                required
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                placeholder="tu@email.com"
-                className={errors.email ? "border-destructive" : ""}
-              />
-              {errors.email && <p className="text-sm text-destructive mt-1">{errors.email}</p>}
-            </div>
-
-            <div>
-              <Label>Preferencia de contacto *</Label>
-              <RadioGroup
-                value={formData.contact_preference}
-                onValueChange={(value) => setFormData({ ...formData, contact_preference: value })}
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="whatsapp" id="whatsapp-pref" />
-                  <Label htmlFor="whatsapp-pref">WhatsApp</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="telegram" id="telegram-pref" />
-                  <Label htmlFor="telegram-pref">Telegram</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="email" id="email-pref" />
-                  <Label htmlFor="email-pref">Correo</Label>
-                </div>
-              </RadioGroup>
-            </div>
-
-            <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
-              {isSubmitting ? "Enviando..." : "Enviar Solicitud"}
-            </Button>
-          </form>
-        </Card>
       </div>
     </section>
   );
