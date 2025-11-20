@@ -36,17 +36,23 @@ All colors MUST be HSL.
     --input: 214 32% 91%;
     --ring: 217 91% 60%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
-    /* TechAssist Custom Colors */
+    /* TechAssist Futuristic Colors */
     --tech-blue: 217 91% 60%;
     --tech-blue-dark: 217 91% 45%;
-    --tech-gray: 220 13% 46%;
-    --tech-gray-light: 220 13% 91%;
+    --tech-cyan: 189 94% 43%;
+    --tech-purple: 271 81% 56%;
+    --tech-pink: 330 81% 60%;
     
     /* Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 45%) 100%);
-    --gradient-card: linear-gradient(to bottom, hsl(0 0% 100%) 0%, hsl(210 40% 98%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(271 81% 56%) 50%, hsl(330 81% 60%) 100%);
+    --gradient-card: linear-gradient(to bottom right, hsl(0 0% 100%) 0%, hsl(217 91% 97%) 100%);
+    --gradient-glow: radial-gradient(circle at 50% 50%, hsl(217 91% 60% / 0.3) 0%, transparent 70%);
+    
+    /* Shadows */
+    --shadow-glow: 0 0 40px hsl(217 91% 60% / 0.3);
+    --shadow-card: 0 10px 40px -10px hsl(217 91% 60% / 0.2);
   }
 
   .dark {
@@ -87,5 +93,34 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    font-family: 'Inter', sans-serif;
+  }
+  
+  h1, h2, h3 {
+    font-family: 'Inter', sans-serif;
+  }
+}
+
+@layer utilities {
+  .gradient-text {
+    background: var(--gradient-hero);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .glass-effect {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .card-3d {
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .card-3d:hover {
+    transform: translateY(-10px) rotateX(5deg) rotateY(5deg);
   }
 }
