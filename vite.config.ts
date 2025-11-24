@@ -35,7 +35,6 @@ export default defineConfig(({ mode }) => ({
         },
       },
     },
-    minify: "esbuild",
   },
   optimizeDeps: {
     include: ["react", "react-dom", "framer-motion"],
