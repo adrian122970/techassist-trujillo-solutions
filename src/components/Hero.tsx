@@ -107,16 +107,22 @@ const Hero = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 href="#contact"
-                className="px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg font-bold flex items-center justify-center gap-2 hover:shadow-lg transition-all text-sm sm:text-base"
+                className="relative px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-blue-500 via-blue-600 to-purple-600 text-white rounded-lg font-bold flex items-center justify-center gap-2 hover:shadow-[0_0_40px_rgba(59,130,246,0.6)] transition-all text-sm sm:text-base overflow-hidden group"
               >
-                Consulta gratis <ArrowRight size={18} className="hidden sm:inline" />
+                <motion.div
+                  animate={{ x: ['-100%', '100%'] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                />
+                <span className="relative z-10">Consulta gratis</span>
+                <ArrowRight size={18} className="hidden sm:inline relative z-10" />
               </motion.a>
 
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setVideoOpen(true)}
-                className="px-6 sm:px-8 py-3 sm:py-4 border-2 border-blue-400 text-blue-300 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-blue-500/10 transition-all text-sm sm:text-base"
+                className="px-6 sm:px-8 py-3 sm:py-4 border-2 border-blue-400 text-blue-300 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-blue-500/10 hover:shadow-[0_0_20px_rgba(59,130,246,0.4)] transition-all text-sm sm:text-base"
               >
                 <Play size={18} /> Ver demo
               </motion.button>
