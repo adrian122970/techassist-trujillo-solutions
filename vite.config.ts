@@ -9,8 +9,8 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
     headers: {
-      "Content-Security-Policy": "default-src 'self' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://drive.google.com https://docs.google.com; frame-src 'self' https://drive.google.com https://docs.google.com https://www.youtube.com; connect-src 'self' https: wss:; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; media-src 'self' https: blob:;",
-      "Permissions-Policy": "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=(), encrypted-media=(self 'https://drive.google.com'), fullscreen=(self 'https://drive.google.com' 'https://www.youtube.com'), picture-in-picture=(self 'https://drive.google.com' 'https://www.youtube.com')",
+      "Content-Security-Policy": "default-src 'self' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://drive.google.com https://docs.google.com https://cdn.gpteng.co blob:; worker-src 'self' blob:; frame-src 'self' https://drive.google.com https://docs.google.com https://www.youtube.com https://accounts.google.com; connect-src 'self' https: wss:; img-src 'self' data: https: blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; media-src 'self' https: blob:;",
+      "Permissions-Policy": "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=(), encrypted-media=(self https://drive.google.com https://www.youtube.com), fullscreen=(self https://drive.google.com https://www.youtube.com), picture-in-picture=(self https://drive.google.com https://www.youtube.com), clipboard-write=(self), web-share=(self)",
       "X-Content-Type-Options": "nosniff",
       "X-Frame-Options": "SAMEORIGIN",
       "X-XSS-Protection": "1; mode=block",
