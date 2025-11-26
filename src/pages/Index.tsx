@@ -3,6 +3,8 @@ import Hero from "@/components/Hero";
 import ProblemSolution from "@/components/ProblemSolution";
 import VideoShowcase from "@/components/VideoShowcase";
 import Services from "@/components/Services";
+import ProjectGallery3D from "@/components/ProjectGallery3D";
+import ServiceDemos from "@/components/ServiceDemos";
 import UseCases from "@/components/UseCases";
 import Benefits from "@/components/Benefits";
 import Testimonials from "@/components/Testimonials";
@@ -19,6 +21,8 @@ const Index = () => {
       <ProblemSolution />
       <VideoShowcase />
       <Services />
+      <ProjectGallery3D />
+      <ServiceDemos />
       <UseCases />
       <Benefits />
       <Testimonials />
