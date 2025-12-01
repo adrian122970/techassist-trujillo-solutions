@@ -192,10 +192,12 @@ const ProjectGallery3D = () => {
 
   // Navigate projects
   const handlePrevious = () => {
+    if (filteredProjects.length === 0) return;
     setCurrentIndex((prev) => (prev - 1 + filteredProjects.length) % filteredProjects.length);
   };
 
   const handleNext = () => {
+    if (filteredProjects.length === 0) return;
     setCurrentIndex((prev) => (prev + 1) % filteredProjects.length);
   };
 
@@ -211,9 +213,18 @@ const ProjectGallery3D = () => {
     }
   };
 
+  // Reset index when category changes
   useEffect(() => {
-    focusOnProject(currentIndex);
-  }, [currentIndex]);
+    if (currentIndex >= filteredProjects.length) {
+      setCurrentIndex(0);
+    }
+  }, [selectedCategory, filteredProjects.length, currentIndex]);
+
+  useEffect(() => {
+    if (filteredProjects.length > 0) {
+      focusOnProject(currentIndex);
+    }
+  }, [currentIndex, filteredProjects.length]);
 
   return (
     <section id="galeria-3d" className="py-24 relative overflow-hidden bg-gradient-to-b from-background to-muted/30">
@@ -307,28 +318,31 @@ const ProjectGallery3D = () => {
           </Canvas>
 
           {/* Control Panel */}
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-background/80 backdrop-blur-sm border border-border rounded-full px-4 py-2 shadow-lg">
-            <Button
-              size="icon"
-              variant="ghost"
-              onClick={handlePrevious}
-              className="rounded-full"
-            >
-              <ChevronLeft className="h-5 w-5" />
-            </Button>
+          {filteredProjects.length > 0 && (
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-background/80 backdrop-blur-sm border border-border rounded-full px-4 py-2 shadow-lg">
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={handlePrevious}
+                className="rounded-full"
+                disabled={filteredProjects.length === 0}
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </Button>
 
-            <div className="px-3 text-sm font-medium">
-              {currentIndex + 1} / {filteredProjects.length}
-            </div>
+              <div className="px-3 text-sm font-medium">
+                {currentIndex + 1} / {filteredProjects.length}
+              </div>
 
-            <Button
-              size="icon"
-              variant="ghost"
-              onClick={handleNext}
-              className="rounded-full"
-            >
-              <ChevronRight className="h-5 w-5" />
-            </Button>
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={handleNext}
+                className="rounded-full"
+                disabled={filteredProjects.length === 0}
+              >
+                <ChevronRight className="h-5 w-5" />
+              </Button>
 
             <div className="w-px h-6 bg-border mx-2" />
 
@@ -341,19 +355,20 @@ const ProjectGallery3D = () => {
               {isAutoPlay ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
             </Button>
 
-            <Button
-              size="icon"
-              variant="ghost"
-              onClick={toggleFullscreen}
-              className="rounded-full"
-            >
-              {isFullscreen ? <Minimize2 className="h-5 w-5" /> : <Maximize2 className="h-5 w-5" />}
-            </Button>
-          </div>
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={toggleFullscreen}
+                className="rounded-full"
+              >
+                {isFullscreen ? <Minimize2 className="h-5 w-5" /> : <Maximize2 className="h-5 w-5" />}
+              </Button>
+            </div>
+          )}
 
           {/* Project Info Overlay */}
           <AnimatePresence>
-            {filteredProjects[currentIndex] && (
+            {filteredProjects.length > 0 && filteredProjects[currentIndex] && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
