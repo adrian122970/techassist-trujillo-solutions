@@ -23,7 +23,7 @@ const projects = [
     description: "Tienda online con sistema de pagos",
     category: "web",
     color: "#3b82f6",
-    position: [-3, 0, 0] as [number, number, number],
+    position: [-4, 0, 0] as [number, number, number],
     image: "web-development.jpg"
   },
   {
@@ -31,15 +31,39 @@ const projects = [
     description: "Sistema de pedidos automatizado",
     category: "automation",
     color: "#10b981",
-    position: [0, 0, 0] as [number, number, number],
+    position: [-2, 0, 0] as [number, number, number],
     image: "restaurant-automation.jpg"
+  },
+  {
+    title: "Sistema Hotel",
+    description: "Reservas y gestión hotelera",
+    category: "hospitality",
+    color: "#0ea5e9",
+    position: [0, 0, 0] as [number, number, number],
+    image: "hero-tech.jpg"
+  },
+  {
+    title: "Gestión Inventario",
+    description: "Control de stock en tiempo real",
+    category: "inventory",
+    color: "#14b8a6",
+    position: [2, 0, 0] as [number, number, number],
+    image: "web-development.jpg"
+  },
+  {
+    title: "Sistema Clínica",
+    description: "Agendamiento de citas médicas",
+    category: "healthcare",
+    color: "#06b6d4",
+    position: [4, 0, 0] as [number, number, number],
+    image: "cybersecurity.jpg"
   },
   {
     title: "Café Digital",
     description: "Menú digital interactivo",
     category: "automation",
     color: "#f59e0b",
-    position: [3, 0, 0] as [number, number, number],
+    position: [-3, 2, -2] as [number, number, number],
     image: "cafe-digital.jpg"
   },
   {
@@ -47,7 +71,7 @@ const projects = [
     description: "Sistema de monitoreo 24/7",
     category: "security",
     color: "#ef4444",
-    position: [-1.5, 2, -2] as [number, number, number],
+    position: [-1, 2, -2] as [number, number, number],
     image: "cybersecurity.jpg"
   },
   {
@@ -55,8 +79,16 @@ const projects = [
     description: "Panel de métricas en tiempo real",
     category: "web",
     color: "#8b5cf6",
-    position: [1.5, 2, -2] as [number, number, number],
+    position: [1, 2, -2] as [number, number, number],
     image: "hero-tech.jpg"
+  },
+  {
+    title: "E-Commerce Fashion",
+    description: "Tienda de ropa online",
+    category: "web",
+    color: "#ec4899",
+    position: [3, 2, -2] as [number, number, number],
+    image: "restaurant-automation.jpg"
   }
 ];
 
@@ -64,7 +96,10 @@ const categories = [
   { id: "all", label: "Todos" },
   { id: "web", label: "Desarrollo Web" },
   { id: "automation", label: "Automatización" },
-  { id: "security", label: "Seguridad" }
+  { id: "security", label: "Seguridad" },
+  { id: "hospitality", label: "Hotelería" },
+  { id: "inventory", label: "Inventario" },
+  { id: "healthcare", label: "Salud" }
 ];
 
 // 3D Project Card Component
