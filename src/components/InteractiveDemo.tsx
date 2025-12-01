@@ -19,7 +19,17 @@ import {
   BarChart3,
   TrendingUp,
   Users,
-  DollarSign
+  DollarSign,
+  Hotel,
+  Calendar,
+  MapPin,
+  Star,
+  Stethoscope,
+  UserCircle,
+  ClipboardList,
+  PackageCheck,
+  AlertCircle,
+  TrendingDown
 } from "lucide-react";
 
 interface InteractiveDemoProps {
@@ -397,18 +407,570 @@ const AnalyticsDemo = () => {
   );
 };
 
+// Hotel Reservation Demo
+const HotelReservationDemo = () => {
+  const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
+  const [checkIn, setCheckIn] = useState("");
+  const [checkOut, setCheckOut] = useState("");
+  const [guests, setGuests] = useState(2);
+  const [reservationStatus, setReservationStatus] = useState<"browsing" | "booking" | "confirmed">("browsing");
+
+  const rooms = [
+    { 
+      id: "1", 
+      name: "Habitación Estándar", 
+      price: "$80", 
+      amenities: ["WiFi", "TV", "Aire Acond."],
+      rating: 4.2,
+      available: 5
+    },
+    { 
+      id: "2", 
+      name: "Suite Deluxe", 
+      price: "$150", 
+      amenities: ["WiFi", "Jacuzzi", "Vista al Mar"],
+      rating: 4.8,
+      available: 2
+    },
+    { 
+      id: "3", 
+      name: "Suite Presidencial", 
+      price: "$300", 
+      amenities: ["WiFi", "Balcón", "Servicio 24h"],
+      rating: 4.9,
+      available: 1
+    }
+  ];
+
+  const handleBooking = () => {
+    if (selectedRoom && checkIn && checkOut) {
+      setReservationStatus("booking");
+      setTimeout(() => setReservationStatus("confirmed"), 2000);
+    }
+  };
+
+  return (
+    <div className="bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-950/20 dark:to-indigo-900/20 rounded-xl p-6 space-y-4">
+      <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md">
+        <h3 className="font-bold text-xl flex items-center gap-2">
+          <Hotel className="h-6 w-6 text-blue-500" />
+          Sistema de Reservas - Hotel Paradise
+        </h3>
+      </div>
+
+      {reservationStatus === "browsing" && (
+        <>
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 space-y-3">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-sm font-medium mb-1 block">Check-in</label>
+                <Input 
+                  type="date" 
+                  value={checkIn}
+                  onChange={(e) => setCheckIn(e.target.value)}
+                  min={new Date().toISOString().split('T')[0]}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium mb-1 block">Check-out</label>
+                <Input 
+                  type="date" 
+                  value={checkOut}
+                  onChange={(e) => setCheckOut(e.target.value)}
+                  min={checkIn || new Date().toISOString().split('T')[0]}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium mb-1 block">Huéspedes</label>
+              <div className="flex items-center gap-3">
+                <Button 
+                  variant="outline" 
+                  size="icon"
+                  onClick={() => setGuests(Math.max(1, guests - 1))}
+                >
+                  <Minus className="h-4 w-4" />
+                </Button>
+                <span className="font-semibold text-lg w-12 text-center">{guests}</span>
+                <Button 
+                  variant="outline" 
+                  size="icon"
+                  onClick={() => setGuests(Math.min(10, guests + 1))}
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            {rooms.map((room) => (
+              <motion.div
+                key={room.id}
+                whileHover={{ scale: 1.02 }}
+                onClick={() => setSelectedRoom(room.id)}
+                className={`bg-white dark:bg-gray-800 rounded-lg p-4 cursor-pointer border-2 transition-all ${
+                  selectedRoom === room.id 
+                    ? "border-blue-500 shadow-lg" 
+                    : "border-transparent"
+                }`}
+              >
+                <div className="flex justify-between items-start mb-2">
+                  <div>
+                    <h4 className="font-semibold text-lg">{room.name}</h4>
+                    <div className="flex items-center gap-1 text-sm text-yellow-500 mb-1">
+                      <Star className="h-4 w-4 fill-current" />
+                      <span className="font-medium">{room.rating}</span>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-2xl font-bold text-primary">{room.price}</p>
+                    <p className="text-xs text-muted-foreground">por noche</p>
+                  </div>
+                </div>
+                
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {room.amenities.map((amenity, idx) => (
+                    <span key={idx} className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded text-xs">
+                      {amenity}
+                    </span>
+                  ))}
+                </div>
+
+                <div className="flex items-center gap-2 text-sm">
+                  <MapPin className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-muted-foreground">
+                    {room.available} habitaciones disponibles
+                  </span>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {selectedRoom && checkIn && checkOut && (
+            <Button 
+              className="w-full" 
+              size="lg"
+              onClick={handleBooking}
+            >
+              <Calendar className="h-5 w-5 mr-2" />
+              Confirmar Reservación
+            </Button>
+          )}
+        </>
+      )}
+
+      {reservationStatus === "booking" && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-blue-50 dark:bg-blue-950/20 rounded-lg p-8 text-center"
+        >
+          <Clock className="h-16 w-16 text-blue-500 mx-auto mb-4 animate-spin" />
+          <h4 className="font-bold text-xl mb-2">Procesando Reserva...</h4>
+          <p className="text-muted-foreground">Verificando disponibilidad</p>
+        </motion.div>
+      )}
+
+      {reservationStatus === "confirmed" && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-green-50 dark:bg-green-950/20 rounded-lg p-8 text-center space-y-4"
+        >
+          <CheckCircle2 className="h-16 w-16 text-green-500 mx-auto" />
+          <div>
+            <h4 className="font-bold text-xl mb-2">¡Reserva Confirmada!</h4>
+            <p className="text-muted-foreground mb-4">Código de reserva: #HTL{Math.floor(Math.random() * 10000)}</p>
+          </div>
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 text-left space-y-2">
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Check-in:</span>
+              <span className="font-semibold">{checkIn}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Check-out:</span>
+              <span className="font-semibold">{checkOut}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Huéspedes:</span>
+              <span className="font-semibold">{guests}</span>
+            </div>
+          </div>
+        </motion.div>
+      )}
+    </div>
+  );
+};
+
+// Inventory Management Demo
+const InventoryManagementDemo = () => {
+  const [products, setProducts] = useState([
+    { id: 1, name: "Laptop HP", stock: 15, minStock: 10, status: "good" },
+    { id: 2, name: "Mouse Logitech", stock: 8, minStock: 15, status: "low" },
+    { id: 3, name: "Teclado Mecánico", stock: 3, minStock: 10, status: "critical" },
+    { id: 4, name: "Monitor 24\"", stock: 12, minStock: 8, status: "good" }
+  ]);
+  const [selectedProduct, setSelectedProduct] = useState<number | null>(null);
+  const [quantity, setQuantity] = useState(0);
+  const [action, setAction] = useState<"add" | "remove" | null>(null);
+
+  const updateStock = () => {
+    if (selectedProduct && quantity > 0) {
+      setProducts(prev => prev.map(p => {
+        if (p.id === selectedProduct) {
+          const newStock = action === "add" ? p.stock + quantity : Math.max(0, p.stock - quantity);
+          let status = "good";
+          if (newStock < p.minStock / 2) status = "critical";
+          else if (newStock < p.minStock) status = "low";
+          
+          return { ...p, stock: newStock, status };
+        }
+        return p;
+      }));
+      
+      setSelectedProduct(null);
+      setQuantity(0);
+      setAction(null);
+    }
+  };
+
+  const criticalCount = products.filter(p => p.status === "critical").length;
+  const lowCount = products.filter(p => p.status === "low").length;
+
+  return (
+    <div className="bg-gradient-to-br from-emerald-50 to-teal-100 dark:from-emerald-950/20 dark:to-teal-900/20 rounded-xl p-6 space-y-4">
+      <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md">
+        <h3 className="font-bold text-xl flex items-center gap-2">
+          <PackageCheck className="h-6 w-6 text-emerald-500" />
+          Gestión de Inventario
+        </h3>
+      </div>
+
+      <div className="grid grid-cols-3 gap-3">
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-4">
+          <Package className="h-8 w-8 text-blue-500 mb-2" />
+          <p className="text-2xl font-bold">{products.length}</p>
+          <p className="text-sm text-muted-foreground">Productos</p>
+        </div>
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-4">
+          <AlertTriangle className="h-8 w-8 text-yellow-500 mb-2" />
+          <p className="text-2xl font-bold">{lowCount}</p>
+          <p className="text-sm text-muted-foreground">Stock Bajo</p>
+        </div>
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-4">
+          <AlertCircle className="h-8 w-8 text-red-500 mb-2" />
+          <p className="text-2xl font-bold">{criticalCount}</p>
+          <p className="text-sm text-muted-foreground">Crítico</p>
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        {products.map((product) => (
+          <motion.div
+            key={product.id}
+            whileHover={{ scale: 1.02 }}
+            className="bg-white dark:bg-gray-800 rounded-lg p-4 border-l-4 transition-all"
+            style={{
+              borderColor: 
+                product.status === "critical" ? "#ef4444" :
+                product.status === "low" ? "#f59e0b" :
+                "#10b981"
+            }}
+          >
+            <div className="flex justify-between items-center mb-2">
+              <div className="flex-1">
+                <h4 className="font-semibold">{product.name}</h4>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className={`px-2 py-1 rounded text-xs font-medium ${
+                    product.status === "critical" ? "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300" :
+                    product.status === "low" ? "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300" :
+                    "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300"
+                  }`}>
+                    {product.status === "critical" ? "Crítico" :
+                     product.status === "low" ? "Stock Bajo" :
+                     "Normal"}
+                  </span>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-2xl font-bold">{product.stock}</p>
+                <p className="text-xs text-muted-foreground">unidades</p>
+              </div>
+            </div>
+
+            <div className="flex gap-2 mt-3">
+              <Button
+                size="sm"
+                variant="outline"
+                className="flex-1"
+                onClick={() => {
+                  setSelectedProduct(product.id);
+                  setAction("add");
+                }}
+              >
+                <Plus className="h-4 w-4 mr-1" />
+                Agregar
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                className="flex-1"
+                onClick={() => {
+                  setSelectedProduct(product.id);
+                  setAction("remove");
+                }}
+              >
+                <Minus className="h-4 w-4 mr-1" />
+                Retirar
+              </Button>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      <AnimatePresence>
+        {selectedProduct && action && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="bg-white dark:bg-gray-800 rounded-lg p-4 border-2 border-primary"
+          >
+            <h4 className="font-semibold mb-3">
+              {action === "add" ? "Agregar Stock" : "Retirar Stock"}
+            </h4>
+            <div className="flex items-center gap-3 mb-3">
+              <Button 
+                variant="outline" 
+                size="icon"
+                onClick={() => setQuantity(Math.max(0, quantity - 1))}
+              >
+                <Minus className="h-4 w-4" />
+              </Button>
+              <Input
+                type="number"
+                value={quantity}
+                onChange={(e) => setQuantity(Math.max(0, parseInt(e.target.value) || 0))}
+                className="text-center"
+                min="0"
+              />
+              <Button 
+                variant="outline" 
+                size="icon"
+                onClick={() => setQuantity(quantity + 1)}
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                className="flex-1"
+                onClick={updateStock}
+                disabled={quantity === 0}
+              >
+                Confirmar
+              </Button>
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => {
+                  setSelectedProduct(null);
+                  setQuantity(0);
+                  setAction(null);
+                }}
+              >
+                Cancelar
+              </Button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+// Clinic Appointment Demo
+const ClinicAppointmentDemo = () => {
+  const [selectedDoctor, setSelectedDoctor] = useState<string | null>(null);
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [appointmentStatus, setAppointmentStatus] = useState<"selecting" | "confirming" | "confirmed">("selecting");
+
+  const doctors = [
+    { id: "1", name: "Dr. María García", specialty: "Cardiología", available: true },
+    { id: "2", name: "Dr. Juan Pérez", specialty: "Pediatría", available: true },
+    { id: "3", name: "Dra. Ana López", specialty: "Dermatología", available: false },
+    { id: "4", name: "Dr. Carlos Ruiz", specialty: "Traumatología", available: true }
+  ];
+
+  const timeSlots = ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00"];
+
+  const confirmAppointment = () => {
+    if (selectedDoctor && selectedDate && selectedTime) {
+      setAppointmentStatus("confirming");
+      setTimeout(() => setAppointmentStatus("confirmed"), 2000);
+    }
+  };
+
+  return (
+    <div className="bg-gradient-to-br from-cyan-50 to-blue-100 dark:from-cyan-950/20 dark:to-blue-900/20 rounded-xl p-6 space-y-4">
+      <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md">
+        <h3 className="font-bold text-xl flex items-center gap-2">
+          <Stethoscope className="h-6 w-6 text-cyan-500" />
+          Sistema de Citas - Clínica Salud
+        </h3>
+      </div>
+
+      {appointmentStatus === "selecting" && (
+        <>
+          <div>
+            <h4 className="font-semibold mb-3">Selecciona un Especialista:</h4>
+            <div className="grid grid-cols-2 gap-3">
+              {doctors.map((doctor) => (
+                <motion.div
+                  key={doctor.id}
+                  whileHover={{ scale: doctor.available ? 1.05 : 1 }}
+                  whileTap={{ scale: doctor.available ? 0.95 : 1 }}
+                  onClick={() => doctor.available && setSelectedDoctor(doctor.id)}
+                  className={`bg-white dark:bg-gray-800 rounded-lg p-4 cursor-pointer border-2 transition-all ${
+                    !doctor.available ? "opacity-50 cursor-not-allowed" :
+                    selectedDoctor === doctor.id ? "border-cyan-500 shadow-lg" : "border-transparent"
+                  }`}
+                >
+                  <UserCircle className={`h-12 w-12 mx-auto mb-2 ${
+                    selectedDoctor === doctor.id ? "text-cyan-500" : "text-muted-foreground"
+                  }`} />
+                  <h5 className="font-semibold text-center text-sm">{doctor.name}</h5>
+                  <p className="text-xs text-center text-muted-foreground">{doctor.specialty}</p>
+                  {!doctor.available && (
+                    <p className="text-xs text-center text-red-500 mt-1">No disponible</p>
+                  )}
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+          {selectedDoctor && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              className="space-y-3"
+            >
+              <div>
+                <label className="text-sm font-medium mb-2 block">Fecha:</label>
+                <Input 
+                  type="date" 
+                  value={selectedDate}
+                  onChange={(e) => setSelectedDate(e.target.value)}
+                  min={new Date().toISOString().split('T')[0]}
+                />
+              </div>
+
+              {selectedDate && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                >
+                  <h4 className="font-semibold mb-2">Horarios Disponibles:</h4>
+                  <div className="grid grid-cols-4 gap-2">
+                    {timeSlots.map((time) => (
+                      <Button
+                        key={time}
+                        variant={selectedTime === time ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setSelectedTime(time)}
+                        className="text-xs"
+                      >
+                        <Clock className="h-3 w-3 mr-1" />
+                        {time}
+                      </Button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+
+              {selectedTime && (
+                <Button 
+                  className="w-full" 
+                  size="lg"
+                  onClick={confirmAppointment}
+                >
+                  <ClipboardList className="h-5 w-5 mr-2" />
+                  Agendar Cita
+                </Button>
+              )}
+            </motion.div>
+          )}
+        </>
+      )}
+
+      {appointmentStatus === "confirming" && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-cyan-50 dark:bg-cyan-950/20 rounded-lg p-8 text-center"
+        >
+          <Clock className="h-16 w-16 text-cyan-500 mx-auto mb-4 animate-spin" />
+          <h4 className="font-bold text-xl mb-2">Agendando Cita...</h4>
+          <p className="text-muted-foreground">Confirmando disponibilidad</p>
+        </motion.div>
+      )}
+
+      {appointmentStatus === "confirmed" && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-green-50 dark:bg-green-950/20 rounded-lg p-8 text-center space-y-4"
+        >
+          <CheckCircle2 className="h-16 w-16 text-green-500 mx-auto" />
+          <div>
+            <h4 className="font-bold text-xl mb-2">¡Cita Confirmada!</h4>
+            <p className="text-muted-foreground mb-4">Código de cita: #MED{Math.floor(Math.random() * 10000)}</p>
+          </div>
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 text-left space-y-2">
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Doctor:</span>
+              <span className="font-semibold">
+                {doctors.find(d => d.id === selectedDoctor)?.name}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Fecha:</span>
+              <span className="font-semibold">{selectedDate}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Hora:</span>
+              <span className="font-semibold">{selectedTime}</span>
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            📧 Recordatorio enviado a tu email
+          </p>
+        </motion.div>
+      )}
+    </div>
+  );
+};
+
 const InteractiveDemo = ({ category, projectTitle }: InteractiveDemoProps) => {
   const renderDemo = () => {
     switch (category) {
       case "web":
-        if (projectTitle.includes("E-Commerce") || projectTitle.includes("Dashboard")) {
-          return projectTitle.includes("Dashboard") ? <AnalyticsDemo /> : <ECommerceDemo />;
-        }
+        if (projectTitle.includes("E-Commerce")) return <ECommerceDemo />;
+        if (projectTitle.includes("Dashboard") || projectTitle.includes("Analytics")) return <AnalyticsDemo />;
         return <ECommerceDemo />;
       case "automation":
         return <RestaurantDemo />;
       case "security":
         return <SecurityDemo />;
+      case "hospitality":
+        return <HotelReservationDemo />;
+      case "inventory":
+        return <InventoryManagementDemo />;
+      case "healthcare":
+        return <ClinicAppointmentDemo />;
       default:
         return <AnalyticsDemo />;
     }
