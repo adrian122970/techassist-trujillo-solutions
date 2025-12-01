@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import * as THREE from "three";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import InteractiveDemo from "./InteractiveDemo";
 import { 
   ChevronLeft, 
   ChevronRight, 
@@ -403,7 +405,7 @@ const ProjectGallery3D = () => {
                 initial={{ scale: 0.9, y: 50 }}
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.9, y: 50 }}
-                className="bg-card rounded-2xl p-8 max-w-2xl w-full border border-border"
+                className="bg-card rounded-2xl p-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-border"
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="flex justify-between items-start mb-6">
@@ -420,28 +422,118 @@ const ProjectGallery3D = () => {
                     <X className="h-5 w-5" />
                   </Button>
                 </div>
-                
-                <div className="space-y-4">
-                  <div>
-                    <h4 className="font-semibold mb-2">Características:</h4>
-                    <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                      <li>Diseño responsive y moderno</li>
-                      <li>Optimización de velocidad</li>
-                      <li>Integración con sistemas de pago</li>
-                      <li>Panel de administración completo</li>
-                      <li>Soporte técnico incluido</li>
-                    </ul>
-                  </div>
-                  
-                  <div>
-                    <h4 className="font-semibold mb-2">Tecnologías:</h4>
-                    <div className="flex flex-wrap gap-2">
-                      <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">React</span>
-                      <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">TypeScript</span>
-                      <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">Tailwind CSS</span>
-                      <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">Node.js</span>
+
+                <Tabs defaultValue="demo" className="w-full">
+                  <TabsList className="grid w-full grid-cols-3">
+                    <TabsTrigger value="demo">Demo Interactiva</TabsTrigger>
+                    <TabsTrigger value="features">Características</TabsTrigger>
+                    <TabsTrigger value="tech">Tecnologías</TabsTrigger>
+                  </TabsList>
+
+                  <TabsContent value="demo" className="mt-6">
+                    <InteractiveDemo 
+                      category={selectedProject.category}
+                      projectTitle={selectedProject.title}
+                    />
+                  </TabsContent>
+
+                  <TabsContent value="features" className="mt-6">
+                    <div className="space-y-4">
+                      <div>
+                        <h4 className="font-semibold mb-3 text-lg">Características Principales:</h4>
+                        <ul className="space-y-2">
+                          <li className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
+                            <span className="text-primary font-bold">✓</span>
+                            <div>
+                              <p className="font-medium">Diseño Responsive y Moderno</p>
+                              <p className="text-sm text-muted-foreground">Adaptado a todos los dispositivos</p>
+                            </div>
+                          </li>
+                          <li className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
+                            <span className="text-primary font-bold">✓</span>
+                            <div>
+                              <p className="font-medium">Optimización de Velocidad</p>
+                              <p className="text-sm text-muted-foreground">Carga rápida y rendimiento superior</p>
+                            </div>
+                          </li>
+                          <li className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
+                            <span className="text-primary font-bold">✓</span>
+                            <div>
+                              <p className="font-medium">Sistema de Pagos Integrado</p>
+                              <p className="text-sm text-muted-foreground">Múltiples métodos de pago seguros</p>
+                            </div>
+                          </li>
+                          <li className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
+                            <span className="text-primary font-bold">✓</span>
+                            <div>
+                              <p className="font-medium">Panel de Administración</p>
+                              <p className="text-sm text-muted-foreground">Control total del sistema</p>
+                            </div>
+                          </li>
+                          <li className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
+                            <span className="text-primary font-bold">✓</span>
+                            <div>
+                              <p className="font-medium">Soporte Técnico 24/7</p>
+                              <p className="text-sm text-muted-foreground">Asistencia continua incluida</p>
+                            </div>
+                          </li>
+                        </ul>
+                      </div>
                     </div>
-                  </div>
+                  </TabsContent>
+
+                  <TabsContent value="tech" className="mt-6">
+                    <div className="space-y-4">
+                      <div>
+                        <h4 className="font-semibold mb-3 text-lg">Stack Tecnológico:</h4>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="p-4 bg-gradient-to-br from-blue-500/10 to-blue-500/5 border border-blue-500/20 rounded-lg">
+                            <p className="font-semibold mb-1">React</p>
+                            <p className="text-sm text-muted-foreground">Framework frontend moderno</p>
+                          </div>
+                          <div className="p-4 bg-gradient-to-br from-blue-600/10 to-blue-600/5 border border-blue-600/20 rounded-lg">
+                            <p className="font-semibold mb-1">TypeScript</p>
+                            <p className="text-sm text-muted-foreground">Type safety y mejor DX</p>
+                          </div>
+                          <div className="p-4 bg-gradient-to-br from-cyan-500/10 to-cyan-500/5 border border-cyan-500/20 rounded-lg">
+                            <p className="font-semibold mb-1">Tailwind CSS</p>
+                            <p className="text-sm text-muted-foreground">Estilos modernos y responsive</p>
+                          </div>
+                          <div className="p-4 bg-gradient-to-br from-green-500/10 to-green-500/5 border border-green-500/20 rounded-lg">
+                            <p className="font-semibold mb-1">Node.js</p>
+                            <p className="text-sm text-muted-foreground">Backend escalable y eficiente</p>
+                          </div>
+                          <div className="p-4 bg-gradient-to-br from-purple-500/10 to-purple-500/5 border border-purple-500/20 rounded-lg">
+                            <p className="font-semibold mb-1">Supabase</p>
+                            <p className="text-sm text-muted-foreground">Base de datos y autenticación</p>
+                          </div>
+                          <div className="p-4 bg-gradient-to-br from-orange-500/10 to-orange-500/5 border border-orange-500/20 rounded-lg">
+                            <p className="font-semibold mb-1">Vercel</p>
+                            <p className="text-sm text-muted-foreground">Deployment y hosting</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="bg-primary/10 border border-primary/20 rounded-lg p-4">
+                        <p className="text-sm font-semibold text-primary">
+                          💡 Todas las tecnologías son modernas, escalables y probadas en producción
+                        </p>
+                      </div>
+                    </div>
+                  </TabsContent>
+                </Tabs>
+
+                <div className="mt-6 pt-6 border-t border-border">
+                  <Button 
+                    className="w-full" 
+                    size="lg"
+                    onClick={() => {
+                      setSelectedProject(null);
+                      document.getElementById('contacto')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                  >
+                    Solicitar Este Proyecto
+                  </Button>
                 </div>
               </motion.div>
             </motion.div>
